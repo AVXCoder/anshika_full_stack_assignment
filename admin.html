@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — FairPlay Impact</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f7f4ef;
+      --green: #1a7a4a;
+      --green-light: #e8f5ee;
+      --border: rgba(13,13,13,0.1);
+      --mid: #5a5a5a;
+      --red: #c0392b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(26,122,74,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -200px; left: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .logo span { color: var(--green); }
+
+    .admin-badge {
+      display: inline-block;
+      background: rgba(26,122,74,0.2);
+      color: #6ee097;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 36px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 32px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: white;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input::placeholder { color: rgba(255,255,255,0.2); }
+    input:focus { border-color: var(--green); }
+
+    .demo-hint {
+      background: rgba(26,122,74,0.1);
+      border: 1px solid rgba(26,122,74,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    .demo-hint strong { color: #6ee097; }
+
+    .error-msg {
+      background: rgba(192,57,43,0.15);
+      border: 1px solid rgba(192,57,43,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #f87171;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-login:hover {
+      background: #16693e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(26,122,74,0.3);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.25);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.6); }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="logo">Fair<span>Play</span> Impact</div>
+  <div class="admin-badge">Admin Portal</div>
+
+  <h1>Welcome back</h1>
+  <p class="subtitle">Sign in to access the admin dashboard.</p>
+
+  <div class="demo-hint">
+    🔑 <strong>Demo credentials</strong><br>
+    Email: <strong>admin@fairplay.com</strong><br>
+    Password: <strong>Admin@1234</strong>
+  </div>
+
+  <div class="error-msg" id="errorMsg">Incorrect email or password. Please try again.</div>
+
+  <div class="field">
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="admin@fairplay.com" />
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="••••••••" />
+  </div>
+
+  <button class="btn-login" onclick="login()">Sign In to Admin Panel</button>
+  <a href="index.html" class="back-link">← Back to main site</a>
+</div>
+
+<script>
+  // If already logged in as admin, go straight to admin dashboard
+  if (localStorage.getItem('adminLoggedIn') === 'true') {
+    window.location.href = 'admin-dashboard.html';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+
+  function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const err = document.getElementById('errorMsg');
+
+    if (email === 'admin@fairplay.com' && password === 'Admin@1234') {
+      localStorage.setItem('adminLoggedIn', 'true');
+      window.location.href = 'admin-dashboard.html';
+    } else {
+      err.classList.add('show');
+    }
+  }
+</script>
+</body>
+</html>

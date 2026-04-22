@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — FairPlay Impact</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f7f4ef;
+      --green: #1a7a4a;
+      --green-light: #e8f5ee;
+      --green-mid: rgba(26,122,74,0.12);
+      --gold: #c9a84c;
+      --red: #c0392b;
+      --mid: #5a5a5a;
+      --border: rgba(13,13,13,0.1);
+      --sidebar-w: 240px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--ink);
+      color: white;
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .sidebar-logo span { color: var(--green); }
+
+    .admin-badge {
+      display: inline-block;
+      background: rgba(26,122,74,0.2);
+      color: #6ee097;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .nav-group { margin-bottom: 28px; }
+
+    .nav-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+    .nav-item.active { background: rgba(26,122,74,0.25); color: white; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .admin-info {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 10px;
+    }
+    .admin-info strong { color: rgba(255,255,255,0.7); display: block; }
+
+    .btn-logout {
+      width: 100%;
+      padding: 9px;
+      background: rgba(192,57,43,0.15);
+      color: #f87171;
+      border: 1px solid rgba(192,57,43,0.2);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { background: rgba(192,57,43,0.25); }
+
+    /* MAIN */
+    .main {
+      overflow-y: auto;
+    }
+
+    /* PAGES */
+    .page { display: none; padding: 36px 40px; }
+    .page.active { display: block; }
+
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .page-sub {
+      color: var(--mid);
+      font-size: 0.88rem;
+      margin-bottom: 32px;
+    }
+
+    /* STAT CARDS */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+    }
+
+    .stat-card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+
+    .stat-card-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-card-val.green { color: var(--green); }
+    .stat-card-val.gold { color: var(--gold); }
+
+    .stat-card-note {
+      font-size: 0.75rem;
+      color: var(--mid);
+    }
+
+    /* TABLES */
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-head {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-head h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead tr {
+      background: var(--paper);
+    }
+
+    th {
+      padding: 11px 20px;
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--mid);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(26,122,74,0.02); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .badge.active { background: var(--green-light); color: var(--green); }
+    .badge.inactive { background: #f0f0f0; color: #888; }
+    .badge.pending { background: #fff8e6; color: #b8860b; }
+    .badge.paid { background: var(--green-light); color: var(--green); }
+    .badge.rejected { background: #fde8e8; color: var(--red); }
+
+    .badge::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-green { background: var(--green); color: white; }
+    .btn-green:hover { background: #16693e; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--ink); }
+
+    .btn-red { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+    .btn-red:hover { background: rgba(192,57,43,0.2); }
+
+    .btn-gold { background: rgba(201,168,76,0.15); color: #96700a; border: 1px solid rgba(201,168,76,0.3); }
+    .btn-gold:hover { background: rgba(201,168,76,0.25); }
+
+    .btn-group { display: flex; gap: 6px; }
+
+    /* FORMS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px var(--green-mid);
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .form-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+
+    /* DRAW PANEL */
+    .draw-config {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .draw-option {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .draw-option:hover { border-color: var(--green); }
+    .draw-option.selected { border-color: var(--green); background: var(--green-light); }
+
+    .draw-option h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .draw-option p { font-size: 0.82rem; color: var(--mid); line-height: 1.5; }
+
+    .prize-pool-display {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .pool-box {
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .pool-box-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .pool-box-label { font-size: 0.78rem; color: var(--mid); }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--ink);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success::before { content: '✓'; color: #4ade80; font-weight: 700; }
+    .toast.error::before { content: '✕'; color: #f87171; font-weight: 700; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .page { padding: 20px; }
+      .stat-cards { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .draw-config { grid-template-columns: 1fr; }
+      .prize-pool-display { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Fair<span>Play</span> Impact</div>
+    <div class="admin-badge">Admin Panel</div>
+
+    <div class="nav-group">
+      <div class="nav-label">Overview</div>
+      <button class="nav-item active" onclick="showPage('overview', this)">📊 Dashboard</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Management</div>
+      <button class="nav-item" onclick="showPage('users', this)">👥 Users</button>
+      <button class="nav-item" onclick="showPage('subscriptions', this)">💳 Subscriptions</button>
+      <button class="nav-item" onclick="showPage('scores', this)">⛳ Scores</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Draw & Prizes</div>
+      <button class="nav-item" onclick="showPage('draw', this)">🎯 Draw Engine</button>
+      <button class="nav-item" onclick="showPage('winners', this)">🏆 Winners</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Charities</div>
+      <button class="nav-item" onclick="showPage('charities', this)">💚 Charities</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Reports</div>
+      <button class="nav-item" onclick="showPage('reports', this)">📈 Analytics</button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        Logged in as<strong>admin@fairplay.com</strong>
+      </div>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-sub">Welcome back. Here's what's happening on FairPlay Impact.</p>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-label">Total Users</div>
+          <div class="stat-card-val green" id="statUsers">0</div>
+          <div class="stat-card-note">Registered subscribers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Active Subs</div>
+          <div class="stat-card-val green" id="statActive">0</div>
+          <div class="stat-card-note">Currently active plans</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Prize Pool</div>
+          <div class="stat-card-val gold" id="statPool">₹0</div>
+          <div class="stat-card-note">This month's total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Charity Total</div>
+          <div class="stat-card-val green" id="statCharity">₹0</div>
+          <div class="stat-card-note">Contributed this month</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Recent Activity</h3>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Action</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="activityTable">
+            <tr><td colspan="4" style="text-align:center;color:var(--mid);padding:24px;">No activity yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="page" id="page-users">
+      <h1 class="page-title">User Management</h1>
+      <p class="page-sub">View and manage all registered users and their profiles.</p>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>All Users</h3>
+          <button class="btn btn-green" onclick="addDemoUser()">+ Add Demo User</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Plan</th>
+              <th>Charity</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px;">No users found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div class="page" id="page-subscriptions">
+      <h1 class="page-title">Subscriptions</h1>
+      <p class="page-sub">Manage subscription plans, renewals, and cancellations.</p>
+
+      <div class="stat-cards" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card">
+          <div class="stat-card-label">Monthly Plans</div>
+          <div class="stat-card-val green" id="subMonthly">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Yearly Plans</div>
+          <div class="stat-card-val green" id="subYearly">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Inactive</div>
+          <div class="stat-card-val" id="subInactive">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Subscription Records</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Plan</th>
+              <th>Started</th>
+              <th>Renewal</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subsTable">
+            <tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px;">No subscriptions found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCORES -->
+    <div class="page" id="page-scores">
+      <h1 class="page-title">Score Management</h1>
+      <p class="page-sub">View and edit user golf scores (Stableford format, 1–45).</p>
+
+      <div class="card">
+        <div class="card-head"><h3>All Score Entries</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Score</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="scoresTable">
+            <tr><td colspan="4" style="text-align:center;color:var(--mid);padding:24px;">No scores found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DRAW ENGINE -->
+    <div class="page" id="page-draw">
+      <h1 class="page-title">Draw Engine</h1>
+      <p class="page-sub">Configure and run the monthly prize draw.</p>
+
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-head"><h3>Draw Configuration</h3></div>
+        <div class="draw-config">
+          <div class="draw-option selected" id="opt-random" onclick="selectDrawType('random')">
+            <h4>🎲 Random Draw</h4>
+            <p>Standard lottery-style. Numbers drawn at random from all active subscribers' scores.</p>
+          </div>
+          <div class="draw-option" id="opt-algo" onclick="selectDrawType('algo')">
+            <h4>⚙️ Algorithmic Draw</h4>
+            <p>Weighted by score frequency. Most or least common scores are favoured in the selection.</p>
+          </div>
+        </div>
+        <div class="form-footer">
+          <button class="btn btn-outline" onclick="runSimulation()">▶ Run Simulation</button>
+          <button class="btn btn-green" onclick="publishDraw()">🚀 Publish Draw Results</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Prize Pool Breakdown</h3></div>
+        <div class="prize-pool-display">
+          <div class="pool-box">
+            <div class="pool-box-val" id="pool5">₹0</div>
+            <div class="pool-box-label">5-Match Jackpot (40%)</div>
+          </div>
+          <div class="pool-box">
+            <div class="pool-box-val" id="pool4">₹0</div>
+            <div class="pool-box-label">4-Match (35%)</div>
+          </div>
+          <div class="pool-box">
+            <div class="pool-box-val" id="pool3">₹0</div>
+            <div class="pool-box-label">3-Match (25%)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="simResults" style="display:none;">
+        <div class="card-head"><h3>Simulation Results</h3></div>
+        <div style="padding:24px;" id="simContent"></div>
+      </div>
+    </div>
+
+    <!-- WINNERS -->
+    <div class="page" id="page-winners">
+      <h1 class="page-title">Winners & Verification</h1>
+      <p class="page-sub">Review winner submissions, verify proof, and mark payouts.</p>
+
+      <div class="card">
+        <div class="card-head"><h3>Winner Submissions</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Match Type</th>
+              <th>Prize</th>
+              <th>Proof</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="winnersTable">
+            <tr>
+              <td>demo@user.com</td>
+              <td>4-Number Match</td>
+              <td style="font-weight:600;color:var(--gold);">₹3,500</td>
+              <td><span style="font-size:0.8rem;color:var(--mid);">screenshot_proof.png</span></td>
+              <td><span class="badge pending">Pending</span></td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-green" onclick="verifyWinner(this)">✓ Approve</button>
+                  <button class="btn btn-red" onclick="rejectWinner(this)">✕ Reject</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Payout Tracker</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Amount</th>
+              <th>Approved On</th>
+              <th>Payment Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="payoutsTable">
+            <tr><td colspan="5" style="text-align:center;color:var(--mid);padding:24px;">No approved payouts yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHARITIES -->
+    <div class="page" id="page-charities">
+      <h1 class="page-title">Charity Management</h1>
+      <p class="page-sub">Add, edit, or remove charities. Manage content and media.</p>
+
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-head"><h3>Add New Charity</h3></div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Charity Name</label>
+            <input type="text" id="charityName" placeholder="e.g. Ocean Cleanup Fund" />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select id="charityCategory">
+              <option>Education</option>
+              <option>Healthcare</option>
+              <option>Environment</option>
+              <option>Animal Welfare</option>
+              <option>Community</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Description</label>
+            <textarea id="charityDesc" placeholder="Brief description of this charity's mission..."></textarea>
+          </div>
+          <div class="field">
+            <label>Featured?</label>
+            <select id="charityFeatured">
+              <option value="no">No</option>
+              <option value="yes">Yes — Show on Homepage</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Upcoming Event (optional)</label>
+            <input type="date" id="charityEvent" />
+          </div>
+        </div>
+        <div class="form-footer">
+          <button class="btn btn-green" onclick="addCharity()">+ Add Charity</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Charity Directory</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Featured</th>
+              <th>Subscribers</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="charitiesTable">
+            <tr>
+              <td><strong>Education Fund</strong></td>
+              <td>Education</td>
+              <td><span class="badge active">Yes</span></td>
+              <td>0</td>
+              <td><div class="btn-group"><button class="btn btn-outline">Edit</button><button class="btn btn-red">Delete</button></div></td>
+            </tr>
+            <tr>
+              <td><strong>Healthcare Support</strong></td>
+              <td>Healthcare</td>
+              <td><span class="badge inactive">No</span></td>
+              <td>0</td>
+              <td><div class="btn-group"><button class="btn btn-outline">Edit</button><button class="btn btn-red">Delete</button></div></td>
+            </tr>
+            <tr>
+              <td><strong>Animal Welfare</strong></td>
+              <td>Animal Welfare</td>
+              <td><span class="badge inactive">No</span></td>
+              <td>0</td>
+              <td><div class="btn-group"><button class="btn btn-outline">Edit</button><button class="btn btn-red">Delete</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="page" id="page-reports">
+      <h1 class="page-title">Analytics & Reports</h1>
+      <p class="page-sub">Platform-wide statistics and draw history.</p>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-label">Total Users</div>
+          <div class="stat-card-val green" id="repUsers">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Total Prize Pool</div>
+          <div class="stat-card-val gold" id="repPool">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Charity Contributions</div>
+          <div class="stat-card-val green" id="repCharity">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Draws Run</div>
+          <div class="stat-card-val" id="repDraws">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Draw History</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Draw Type</th>
+              <th>Total Pool</th>
+              <th>Jackpot Winner</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="drawHistory">
+            <tr><td colspan="5" style="text-align:center;color:var(--mid);padding:24px;">No draws completed yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Auth guard
+  if (localStorage.getItem('adminLoggedIn') !== 'true') {
+    window.location.href = 'admin.html';
+  }
+
+  let drawType = 'random';
+  let drawsRun = parseInt(localStorage.getItem('drawsRun') || '0');
+  let charities = JSON.parse(localStorage.getItem('adminCharities') || '[]');
+  let approvedPayouts = JSON.parse(localStorage.getItem('approvedPayouts') || '[]');
+
+  // Demo data
+  const DEMO_USERS = [
+    { name: 'Priya Sharma', email: 'priya@demo.com', plan: 'Monthly', charity: 'Education Fund', status: 'active', renewal: '2026-05-22' },
+    { name: 'Arjun Mehta', email: 'arjun@demo.com', plan: 'Yearly', charity: 'Healthcare Support', status: 'active', renewal: '2027-04-22' },
+    { name: 'Sneha Iyer', email: 'sneha@demo.com', plan: 'Monthly', charity: 'Animal Welfare', status: 'inactive', renewal: '—' },
+  ];
+
+  const MONTHLY_FEE = 499;
+  const YEARLY_FEE = 4788;
+
+  function init() {
+    loadOverview();
+    loadUsers();
+    loadSubscriptions();
+    loadScores();
+    loadPrizePool();
+    loadPayouts();
+  }
+
+  function loadOverview() {
+    const activeCount = DEMO_USERS.filter(u => u.status === 'active').length;
+    const pool = calcPool();
+    const charity = Math.round(pool * 0.1);
+
+    document.getElementById('statUsers').textContent = DEMO_USERS.length;
+    document.getElementById('statActive').textContent = activeCount;
+    document.getElementById('statPool').textContent = '₹' + pool.toLocaleString('en-IN');
+    document.getElementById('statCharity').textContent = '₹' + charity.toLocaleString('en-IN');
+
+    document.getElementById('repUsers').textContent = DEMO_USERS.length;
+    document.getElementById('repPool').textContent = '₹' + pool.toLocaleString('en-IN');
+    document.getElementById('repCharity').textContent = '₹' + charity.toLocaleString('en-IN');
+    document.getElementById('repDraws').textContent = drawsRun;
+
+    // Activity feed
+    const tbody = document.getElementById('activityTable');
+    tbody.innerHTML = `
+      <tr><td>priya@demo.com</td><td>Score entered (28)</td><td>2 mins ago</td><td><span class="badge active">Success</span></td></tr>
+      <tr><td>arjun@demo.com</td><td>Subscribed (Yearly)</td><td>1 hr ago</td><td><span class="badge active">Active</span></td></tr>
+      <tr><td>sneha@demo.com</td><td>Subscription lapsed</td><td>3 hrs ago</td><td><span class="badge inactive">Inactive</span></td></tr>
+    `;
+  }
+
+  function calcPool() {
+    const active = DEMO_USERS.filter(u => u.status === 'active');
+    return active.reduce((sum, u) => sum + (u.plan === 'Yearly' ? Math.round(YEARLY_FEE / 12) : MONTHLY_FEE), 0);
+  }
+
+  function loadUsers() {
+    const tbody = document.getElementById('usersTable');
+    tbody.innerHTML = DEMO_USERS.map(u => `
+      <tr>
+        <td><strong>${u.name}</strong></td>
+        <td>${u.email}</td>
+        <td>${u.plan}</td>
+        <td>${u.charity}</td>
+        <td><span class="badge ${u.status}">${u.status === 'active' ? 'Active' : 'Inactive'}</span></td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-outline" onclick="showToast('Edit user: ${u.email}', 'success')">Edit</button>
+            <button class="btn btn-red" onclick="showToast('User removed', 'error')">Remove</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function loadSubscriptions() {
+    const monthly = DEMO_USERS.filter(u => u.plan === 'Monthly' && u.status === 'active').length;
+    const yearly = DEMO_USERS.filter(u => u.plan === 'Yearly' && u.status === 'active').length;
+    const inactive = DEMO_USERS.filter(u => u.status === 'inactive').length;
+
+    document.getElementById('subMonthly').textContent = monthly;
+    document.getElementById('subYearly').textContent = yearly;
+    document.getElementById('subInactive').textContent = inactive;
+
+    const tbody = document.getElementById('subsTable');
+    tbody.innerHTML = DEMO_USERS.map(u => `
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.plan}</td>
+        <td>2026-04-01</td>
+        <td>${u.renewal}</td>
+        <td><span class="badge ${u.status}">${u.status === 'active' ? 'Active' : 'Inactive'}</span></td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-red" onclick="showToast('Subscription cancelled', 'error')">Cancel</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function loadScores() {
+    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+    const tbody = document.getElementById('scoresTable');
+
+    const demoScores = [
+      { user: 'priya@demo.com', value: 28, date: '2026-04-20' },
+      { user: 'priya@demo.com', value: 32, date: '2026-04-15' },
+      { user: 'arjun@demo.com', value: 41, date: '2026-04-18' },
+      { user: 'arjun@demo.com', value: 35, date: '2026-04-10' },
+      ...scores.map(s => ({ user: 'You (demo)', value: s.value, date: s.date }))
+    ];
+
+    if (demoScores.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--mid);padding:24px;">No scores found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = demoScores.map(s => `
+      <tr>
+        <td>${s.user}</td>
+        <td><strong>${s.value}</strong></td>
+        <td>${new Date(s.date + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-outline" onclick="showToast('Score edited', 'success')">Edit</button>
+            <button class="btn btn-red" onclick="showToast('Score deleted', 'error')">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function loadPrizePool() {
+    const pool = calcPool();
+    document.getElementById('pool5').textContent = '₹' + Math.round(pool * 0.40).toLocaleString('en-IN');
+    document.getElementById('pool4').textContent = '₹' + Math.round(pool * 0.35).toLocaleString('en-IN');
+    document.getElementById('pool3').textContent = '₹' + Math.round(pool * 0.25).toLocaleString('en-IN');
+  }
+
+  function selectDrawType(type) {
+    drawType = type;
+    document.getElementById('opt-random').classList.toggle('selected', type === 'random');
+    document.getElementById('opt-algo').classList.toggle('selected', type === 'algo');
+  }
+
+  function runSimulation() {
+    const pool = calcPool();
+    const nums = Array.from({ length: 5 }, () => Math.floor(Math.random() * 45) + 1);
+    const box = document.getElementById('simResults');
+    const content = document.getElementById('simContent');
+
+    box.style.display = 'block';
+    content.innerHTML = `
+      <p style="margin-bottom:16px;font-size:0.88rem;color:var(--mid);">Simulation using <strong>${drawType === 'random' ? 'Random' : 'Algorithmic'}</strong> draw logic. Not published.</p>
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        ${nums.map(n => `<div style="width:48px;height:48px;background:var(--green-light);color:var(--green);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;">${n}</div>`).join('')}
+      </div>
+      <div style="font-size:0.85rem;color:var(--mid);">
+        <p>5-Match Jackpot: <strong style="color:var(--green);">₹${Math.round(pool * 0.40).toLocaleString('en-IN')}</strong> — No winners</p>
+        <p style="margin-top:6px;">4-Match: <strong>₹${Math.round(pool * 0.35).toLocaleString('en-IN')}</strong> — 1 potential winner</p>
+        <p style="margin-top:6px;">3-Match: <strong>₹${Math.round(pool * 0.25).toLocaleString('en-IN')}</strong> — 2 potential winners</p>
+      </div>
+    `;
+    showToast('Simulation complete — not published', 'success');
+  }
+
+  function publishDraw() {
+    drawsRun++;
+    localStorage.setItem('drawsRun', drawsRun);
+    document.getElementById('repDraws').textContent = drawsRun;
+
+    const month = new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    const pool = calcPool();
+    const tbody = document.getElementById('drawHistory');
+    const noData = tbody.querySelector('td[colspan]');
+    if (noData) tbody.innerHTML = '';
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${month}</td>
+      <td>${drawType === 'random' ? 'Random' : 'Algorithmic'}</td>
+      <td>₹${pool.toLocaleString('en-IN')}</td>
+      <td style="color:var(--mid);">No jackpot winner</td>
+      <td><span class="badge active">Published</span></td>
+    `;
+    tbody.prepend(row);
+    showToast('Draw results published!', 'success');
+  }
+
+  function verifyWinner(btn) {
+    const row = btn.closest('tr');
+    const cells = row.querySelectorAll('td');
+    const user = cells[0].textContent;
+    const prize = cells[2].textContent;
+
+    row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge paid">Approved</span>';
+    row.querySelector('td:nth-child(6)').innerHTML = '<span style="font-size:0.8rem;color:var(--green);font-weight:600;">✓ Verified</span>';
+
+    const payBody = document.getElementById('payoutsTable');
+    const noData = payBody.querySelector('td[colspan]');
+    if (noData) payBody.innerHTML = '';
+
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${user}</td>
+      <td style="font-weight:600;color:var(--gold);">${prize}</td>
+      <td>${new Date().toLocaleDateString('en-IN')}</td>
+      <td><span class="badge pending">Pending</span></td>
+      <td><button class="btn btn-gold" onclick="markPaid(this)">Mark as Paid</button></td>
+    `;
+    payBody.appendChild(newRow);
+    showToast('Winner approved — added to payout queue', 'success');
+  }
+
+  function rejectWinner(btn) {
+    const row = btn.closest('tr');
+    row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge rejected">Rejected</span>';
+    row.querySelector('td:nth-child(6)').innerHTML = '<span style="font-size:0.8rem;color:var(--red);">✕ Rejected</span>';
+    showToast('Winner submission rejected', 'error');
+  }
+
+  function markPaid(btn) {
+    const row = btn.closest('tr');
+    row.querySelector('td:nth-child(4)').innerHTML = '<span class="badge paid">Paid</span>';
+    btn.remove();
+    showToast('Payout marked as completed', 'success');
+  }
+
+  function loadPayouts() {}
+
+  function addCharity() {
+    const name = document.getElementById('charityName').value.trim();
+    const cat = document.getElementById('charityCategory').value;
+    const featured = document.getElementById('charityFeatured').value;
+
+    if (!name) { showToast('Please enter a charity name', 'error'); return; }
+
+    const tbody = document.getElementById('charitiesTable');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${name}</strong></td>
+      <td>${cat}</td>
+      <td><span class="badge ${featured === 'yes' ? 'active' : 'inactive'}">${featured === 'yes' ? 'Yes' : 'No'}</span></td>
+      <td>0</td>
+      <td><div class="btn-group"><button class="btn btn-outline">Edit</button><button class="btn btn-red" onclick="this.closest('tr').remove();showToast('Charity removed','error')">Delete</button></div></td>
+    `;
+    tbody.appendChild(row);
+    document.getElementById('charityName').value = '';
+    document.getElementById('charityDesc').value = '';
+    showToast(`${name} added to charity directory`, 'success');
+  }
+
+  function addDemoUser() {
+    showToast('Demo: User management requires backend integration', 'success');
+  }
+
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function logout() {
+    localStorage.removeItem('adminLoggedIn');
+    window.location.href = 'admin.html';
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  init();
+</script>
+</body>
+</html>
